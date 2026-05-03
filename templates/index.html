@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AMS Updater</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <div class="bg-shape"></div>
+    <div class="hero-image"></div>
+    <main class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-body p-4 p-md-5">
+              <div class="brand-wrap mb-4">
+                <div class="brand-mark">FP</div>
+                <div>
+                  <div class="brand-title">Forte Pespa Ireland</div>
+                  <div class="brand-subtitle">Balcony Systems - AMS Price Updater</div>
+                </div>
+              </div>
+              <h1 class="h3 fw-bold mb-2">AMS Price Updater</h1>
+              <p class="text-muted mb-4">
+                Upload AMS source file and your production input file. The app will return an
+                updated Excel with <strong>AMS Length</strong> and <strong>AMS Cost</strong> filled
+                for aluminium parts.
+              </p>
+
+              {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                  <div class="alert alert-danger rounded-3">
+                    {% for msg in messages %}
+                      <div>{{ msg }}</div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              {% endwith %}
+
+              <form action="{{ url_for('process_files') }}" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                  <label for="source_file" class="form-label fw-semibold">AMS Source (PDF/Excel)</label>
+                  <input class="form-control form-control-lg" id="source_file" name="source_file" type="file" accept=".pdf,.xlsx,.xlsm" required />
+                </div>
+
+                <div class="mb-3">
+                  <label for="input_excel" class="form-label fw-semibold">Production Input Excel</label>
+                  <input class="form-control form-control-lg" id="input_excel" name="input_excel" type="file" accept=".xlsx,.xlsm" required />
+                </div>
+
+                <div class="mb-4">
+                  <label class="form-label fw-semibold d-block">Select Class</label>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="selected_class" id="class1" value="1" checked />
+                    <label class="form-check-label" for="class1">Class 1</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="selected_class" id="class2" value="2" />
+                    <label class="form-check-label" for="class2">Class 2</label>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100 rounded-3">
+                  Generate Updated File
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
