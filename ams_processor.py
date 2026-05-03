@@ -185,13 +185,12 @@ def process_ams_update(source_path, excel_path, selected_class):
                 for table in tables:
                     parse_table_like_rows(table)
     elif source_ext in {".xlsx", ".xlsm"}:
-        src_wb = load_workbook(source_path, data_only=True, keep_vba=True)
+        src_wb = load_workbook(source_path, data_only=True, keep_vba=True, read_only=True)
         for sheet_name in src_wb.sheetnames:
             src_ws = src_wb[sheet_name]
-            rows = [
-                [src_ws.cell(row=r, column=c).value for c in range(1, src_ws.max_column + 1)]
-                for r in range(1, src_ws.max_row + 1)
-            ]
+            rows = []
+            for row in src_ws.iter_rows(values_only=True):
+                rows.append(list(row))
             parse_table_like_rows(rows)
     else:
         raise Exception("Unsupported AMS source format. Use PDF or Excel (.xlsx/.xlsm).")
@@ -212,7 +211,7 @@ def process_ams_update(source_path, excel_path, selected_class):
         if selected_price is not None or selected_length is not None:
             ams_lookup[code] = {"length": selected_length, "price": selected_price}
 
-    wb = load_workbook(excel_path, keep_vba=True)
+    wb = load_workbook(excel_path, keep_vba=True, keep_links=False)
     sheet_name = find_best_sheet(wb)
     if not sheet_name:
         raise Exception("Production Inputs sheet not found")
